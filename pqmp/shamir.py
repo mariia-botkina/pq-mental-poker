@@ -5,7 +5,7 @@ def split(secret:int, t:int, n:int, F:Field) -> list[tuple[int, int]]:
         raise ValueError(f"n={n} must be less than modulus {F.modulus}")
 
     if t > n:
-        raise ValueError("t={t} cannot exceed n={n}")
+        raise ValueError(f"t={t} cannot exceed n={n}")
     
     secret = secret % F.modulus
 
@@ -26,6 +26,14 @@ def split(secret:int, t:int, n:int, F:Field) -> list[tuple[int, int]]:
 
 
 def reconstruct(shares:list[tuple[int, int]], F:Field) -> int:
+    xs = [x for x, _ in shares]
+    if len(set(xs)) != len(xs):
+        raise ValueError("share indices must be distinct")
+    if 0 in xs:
+        raise ValueError("share index 0 is not a valid share: omega(0) is the secret itself")
+    if not xs:
+        raise ValueError("no shares provided") 
+
     secret = 0
 
     for x_j, _ in shares:
