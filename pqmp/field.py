@@ -45,7 +45,7 @@ class Field:
     def __repr__(self) -> str:
         return f"<Field {self.name}, {self.modulus.bit_length()} bits>"
 
-    def __eq__(self, other:Field) -> bool:
+    def __eq__(self, other) -> bool:
         return isinstance(other, Field) and self.modulus == other.modulus
 
     def __hash__(self):
