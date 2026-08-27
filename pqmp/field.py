@@ -31,10 +31,10 @@ class Field:
     def div(self, a:int, b:int) -> int:
         return self.mul(a, self.inv(b))
 
-    def power(self, a:int, exponent:int) -> int:
+    def power(self, base:int, exponent:int) -> int:
         if exponent < 0:
-            return self.inv(self.power(a, -exponent))
-        return pow(a, exponent, self.modulus)
+            return self.inv(self.power(base, -exponent))
+        return pow(base, exponent, self.modulus)
 
     def random_element(self) -> int:
         return secrets.randbelow(self.modulus)
