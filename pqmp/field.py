@@ -2,7 +2,10 @@ import secrets
 from sympy import isprime
 
 class Field:
-    """Modular arithmetic over a prime field.
+    """Arithmetic modulo a prime.
+
+    Elements are plain ints in [0, modulus). Randomness for the whole
+    package originates here, backed by `secrets`.
 
     Educational implementation. Not constant-time, not audited.
     """
@@ -23,6 +26,7 @@ class Field:
         return (a * b) % self.modulus
 
     def inv(self, a:int) -> int:
+        """Multiplicative inverse. Zero has none, hence ZeroDivisionError."""
         a %= self.modulus
         if a == 0:
             raise ZeroDivisionError(f"no inverse of 0 modulo {self.modulus}")
@@ -40,6 +44,7 @@ class Field:
         return secrets.randbelow(self.modulus)
 
     def random_nonzero(self) -> int:
+        """Uniform element of [1, modulus). Uses rejection-free shifting."""
         return secrets.randbelow(self.modulus - 1) + 1
 
     def __repr__(self) -> str:
