@@ -1,4 +1,5 @@
 import secrets
+
 from sympy import isprime
 
 

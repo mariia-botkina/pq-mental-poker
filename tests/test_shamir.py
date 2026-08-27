@@ -1,6 +1,7 @@
 import pytest
+
 from pqmp.field import Field
-from pqmp.shamir import split, reconstruct
+from pqmp.shamir import reconstruct, split
 
 
 @pytest.fixture

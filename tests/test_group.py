@@ -1,4 +1,5 @@
 import pytest
+
 from pqmp.group import Group
 
 
