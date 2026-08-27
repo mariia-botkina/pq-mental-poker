@@ -48,7 +48,7 @@ class Field:
     def __eq__(self, other) -> bool:
         return isinstance(other, Field) and self.modulus == other.modulus
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.modulus)
 
 
