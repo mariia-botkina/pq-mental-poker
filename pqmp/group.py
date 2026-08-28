@@ -54,6 +54,14 @@ class Group:
         """x lies in the order-q subgroup: true iff x^q = 1."""
         return self.is_element(x) and self.power(x, self.q) == 1
 
+    def normalize_exponent(self, x: int) -> int:
+        """Reduce an exponent mod q."""
+        return x % self.q
+
+    def is_valid_exponent(self, x: int) -> bool:
+        """Non-degenerate exponent: not congruent to 0 mod q."""
+        return x % self.q != 0
+
     def __repr__(self) -> str:
         if self.p.bit_length() <= 32:
             return f"<Group p={self.p}, q={self.q}, g={self.g}>"
