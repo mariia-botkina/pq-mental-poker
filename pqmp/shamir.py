@@ -36,6 +36,35 @@ def split(secret: int, t: int, n: int, F: Field) -> list[tuple[int, int]]:
 
     return shares
 
+def lagrange_coefficients(xs: list[int], F: Field) -> dict[int, int]:
+    """Lagrange coefficients for interpolation at x = 0.
+
+    Depends only on the evaluation points, not on the values at them —
+    which is what makes interpolation in the exponent possible.
+    """
+
+    if not xs:
+        raise ValueError("no evaluation points provided")
+    if len(set(xs)) != len(xs):
+        raise ValueError("evaluation points must be distinct")
+    if 0 in xs:
+        raise ValueError(
+            "x = 0 is the interpolation target, not an evaluation point"
+        )
+
+    coeffs = {}
+
+    for x_j in xs:
+        lam_j = 1
+        for x_m in xs:
+            if x_j != x_m:
+                lam_j = F.mul(
+                    lam_j, F.div(F.sub(0, x_m), F.sub(x_j, x_m))
+                ) # lambda_j = prod_{m != j} (0 - x_m) / (x_j - x_m)
+        coeffs[x_j] = lam_j
+
+    return coeffs
+
 
 def reconstruct(shares: list[tuple[int, int]], F: Field) -> int:
     """Recover the secret by Lagrange interpolation at x = 0.
@@ -50,30 +79,4 @@ def reconstruct(shares: list[tuple[int, int]], F: Field) -> int:
 
     return secret
 
-
-def lagrange_coefficients(xs: list[int], F: Field) -> dict[int, int]:
-    """Lagrange coefficients for interpolation at x = 0.
-
-    Depends only on the evaluation points, not on the values at them —
-    which is what makes interpolation in the exponent possible.
-    """
-
-    if not xs:
-        raise ValueError("no evaluation points provided")
-    if len(set(xs)) != len(xs):
-        raise ValueError("evaluation points must be distinct")
-    if 0 in xs:
-        raise ValueError("x = 0 is the interpolation target, not an evaluation point")
-
-    coeffs = {}
-
-    for x_j in xs:
-        lam_j = 1
-        for x_m in xs:
-            if x_j != x_m:
-                lam_j = F.mul(
-                    lam_j, F.div(F.sub(0, x_m), F.sub(x_j, x_m))
-                )  # lambda_j = prod_{m != j} (0 - x_m) / (x_j - x_m)
-        coeffs[x_j] = lam_j
-
-    return coeffs
+                
