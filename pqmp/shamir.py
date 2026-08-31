@@ -26,6 +26,10 @@ def split(secret: int, t: int, n: int, F: Field) -> list[tuple[int, int]]:
     for _ in range(t - 1):
         coeff.append(F.random_element())
 
+    # Coefficients are sampled uniformly, so the leading one may be zero
+    # with probability 1/q, formally lowering the degree. Negligible for
+    # cryptographic q; noted here because the threshold is then t-1.
+
     shares = []
 
     for i in range(1, n + 1):
