@@ -42,28 +42,38 @@ def reconstruct(shares: list[tuple[int, int]], F: Field) -> int:
 
     Share indices must be distinct and non-zero; x = 0 is the secret itself.
     """
-
-    xs = [x for x, _ in shares]
-    if len(set(xs)) != len(xs):
-        raise ValueError("share indices must be distinct")
-    if 0 in xs:
-        raise ValueError(
-            "share index 0 is not a valid share: omega(0) is the secret itself"
-        )
-    if not xs:
-        raise ValueError("no shares provided")
-
     secret = 0
 
-    for x_j, _ in shares:
-        lam = 1
-        for x_m, y_m in shares:
-            if x_m != x_j:
-                lam = F.mul(
-                    lam, F.div(F.sub(0, x_m), F.sub(x_j, x_m))
-                )  # lambda_j = prod_{m != j} (0 - x_m) / (x_j - x_m)
-            else:
-                lam = F.mul(lam, y_m)
-        secret = F.add(secret, lam)
+    lams = lagrange_coefficients([x for x, _ in shares], F)
+    for x_j, y_j in shares:
+        secret = F.add(secret, F.mul(lams[x_j], y_j))
 
     return secret
+
+
+def lagrange_coefficients(xs: list[int], F: Field) -> dict[int, int]:
+    """Lagrange coefficients for interpolation at x = 0.
+
+    Depends only on the evaluation points, not on the values at them —
+    which is what makes interpolation in the exponent possible.
+    """
+
+    if not xs:
+        raise ValueError("no evaluation points provided")
+    if len(set(xs)) != len(xs):
+        raise ValueError("evaluation points must be distinct")
+    if 0 in xs:
+        raise ValueError("x = 0 is the interpolation target, not an evaluation point")
+
+    coeffs = {}
+
+    for x_j in xs:
+        lam_j = 1
+        for x_m in xs:
+            if x_j != x_m:
+                lam_j = F.mul(
+                    lam_j, F.div(F.sub(0, x_m), F.sub(x_j, x_m))
+                )  # lambda_j = prod_{m != j} (0 - x_m) / (x_j - x_m)
+        coeffs[x_j] = lam_j
+
+    return coeffs
