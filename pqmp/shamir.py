@@ -36,6 +36,7 @@ def split(secret: int, t: int, n: int, F: Field) -> list[tuple[int, int]]:
 
     return shares
 
+
 def lagrange_coefficients(xs: list[int], F: Field) -> dict[int, int]:
     """Lagrange coefficients for interpolation at x = 0.
 
@@ -48,9 +49,7 @@ def lagrange_coefficients(xs: list[int], F: Field) -> dict[int, int]:
     if len(set(xs)) != len(xs):
         raise ValueError("evaluation points must be distinct")
     if 0 in xs:
-        raise ValueError(
-            "x = 0 is the interpolation target, not an evaluation point"
-        )
+        raise ValueError("x = 0 is the interpolation target, not an evaluation point")
 
     coeffs = {}
 
@@ -60,7 +59,7 @@ def lagrange_coefficients(xs: list[int], F: Field) -> dict[int, int]:
             if x_j != x_m:
                 lam_j = F.mul(
                     lam_j, F.div(F.sub(0, x_m), F.sub(x_j, x_m))
-                ) # lambda_j = prod_{m != j} (0 - x_m) / (x_j - x_m)
+                )  # lambda_j = prod_{m != j} (0 - x_m) / (x_j - x_m)
         coeffs[x_j] = lam_j
 
     return coeffs
@@ -78,5 +77,3 @@ def reconstruct(shares: list[tuple[int, int]], F: Field) -> int:
         secret = F.add(secret, F.mul(lams[x_j], y_j))
 
     return secret
-
-                
