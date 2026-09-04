@@ -1,6 +1,7 @@
 from pqmp.shamir import split, lagrange_coefficients
 from pqmp.group import Group
 
+
 def distribute_key(t: int, n: int, G: Group) -> tuple[int, list[tuple[int, int]]]:
     """Generate a threshold key pair.
 
@@ -17,7 +18,7 @@ def distribute_key(t: int, n: int, G: Group) -> tuple[int, list[tuple[int, int]]
     return pk, shares
 
 
-def partial_decrypt(share: tuple[int, int], v: int, G: Group) -> tuple[int, int]: 
+def partial_decrypt(share: tuple[int, int], v: int, G: Group) -> tuple[int, int]:
     """Compute this party's decryption share.
 
     Takes (i, sk_i) — one Shamir share of the secret key — and v, the
@@ -37,9 +38,7 @@ def partial_decrypt(share: tuple[int, int], v: int, G: Group) -> tuple[int, int]
     if i == 0:
         raise ValueError("share index 0 is the secret key itself, not a share")
 
-
     return i, G.power(v, sk_i)
-    
 
 
 def combine(partials: list[tuple[int, int]], c: int, G: Group) -> int:
